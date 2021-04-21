@@ -1,28 +1,42 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <div class="work">
+      <!-- <a style="color: white" href="#" @click="test">test</a> -->
+      <div class="layer car-mode" :class="mode"></div>
+      <div class="layer gearbox" :class="{parking: shift === 0, rear: shift === 1, neutral: shift === 2, drive: shift === 3, three: shift === 4}"></div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  data() {
+    return {
+      mode: 'main',
+      shift: 0,
+      socket: null,
+
+    }
+  },
+  created() {
+    //eslint-disable-next-line
+    this.socket = io()
+    this.socket.on('response', response => {
+      alert(response)
+    })
+  },
+  methods: {
+    test() {
+      this.socket.emit('test', 'sdildfsjkdfgjkldfgjklfdsjk')
+    }
+  },
+  
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import 'assets/css/main.css';
 </style>
