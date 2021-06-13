@@ -21,6 +21,10 @@ body {
     color: #95952D;
 }
 
+.gold.active {
+    color: yellow;
+}
+
 .low-info {
     font-size: 18px;
     position: absolute;
@@ -59,7 +63,7 @@ body {
 }
 .gearbox.parking    {background-image: url(../img/P.png);}
 .gearbox.rear       {background-image: url(../img/R.png);}
-.gearbox.neutlral   {background-image: url(../img/N.png);}
+.gearbox.neutral    {background-image: url(../img/N.png);}
 .gearbox.drive      {background-image: url(../img/D.png);}
 .gearbox.three      {background-image: url(../img/3.png);}
 
