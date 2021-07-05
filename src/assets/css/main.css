@@ -21,6 +21,17 @@ body {
     text-align: center;
 }
 
+.brake-info {
+    color: #bbbb;
+    left: 0px;
+    top: 400px;
+    position: fixed;
+    font-size: 35px;
+    font-weight: bold;
+    width: 1023px;
+    text-align: center;
+}
+
 .programming.select .label {
     position: absolute;
     color: #bbbb;
@@ -55,7 +66,7 @@ body {
 
 .layers::after{
     position:absolute; width:0; height:0; overflow:hidden; z-index:-1; 
-    content:url(../img/Start.gif);   
+    content:url(../img/Start.gif) url(../img/hstl.png);   
 }
 
 .gif {
@@ -64,6 +75,14 @@ body {
     height: 320px;
     top: 140px;
     left: 272px;
+}
+
+.logo {
+    position: absolute;
+    width: 336px;
+    height: 113px;
+    top: 243px;
+    left: 344px;
 }
 
 .gold {
@@ -136,6 +155,12 @@ body {
     background-position: 90px 93px;
     background-size: 80%;
 }
+
+.gearbox::after {
+    position:absolute; width:0; height:0; overflow:hidden; z-index:-1; 
+    content: url(../img/P.png) url(../img/R.png) url(../img/N.png) url(../img/D.png) url(../img/3.png);
+}
+
 .gearbox.parking    {background-image: url(../img/P.png);}
 .gearbox.rear       {background-image: url(../img/R.png);}
 .gearbox.neutral    {background-image: url(../img/N.png);}

@@ -24,13 +24,17 @@
         <div class="label">EXHAUST</div>
         <div class="info">&nbsp;{{sboost ? 'BOOST' : 'NORMAL'}}</div>
       </div>
-      <div class="programming" v-if="mode === 'programming'">Set gearbox shift lever in position <br/>{{gears[shift]}} and press OK button</div>
+      <div class="programming" v-if="mode === 'programming'">Set gearbox shift lever in position <br/><span class="gold">{{gears[shift]}}</span> and press OK button</div>
+      <div class="brake-info" v-if="info">PRESS <span class="gold">BRAKE</span> TO START</div>
       <div class="cross layer" v-if="check">
         <div class="vertical"></div>
         <div class="horizontal"></div>
       </div>
     </div>
   <div class="layers" v-if="loading">
+    <div class="logo" v-if="logo">
+      <img src="./assets/img/hstl.png">
+    </div>
     <div class="gif" v-if="gif">
       <img @load="gifStarted()" src="./assets/img/Start.gif">
     </div>
@@ -46,11 +50,11 @@ export default {
   data() {
     return {
       loading: true,
-      gif: false,
+
       boost: false,
-      turn: false,
+      turn: true,
       sboost: false,
-      sturn: false,
+      sturn: true,
       check: true,
       checkEngine: true,
       park: true,
@@ -61,6 +65,11 @@ export default {
       socket: {},
       okTimer: 0,
       timer: 0,
+      info: true, // cостояние вывода надписи нажать педаль
+      infoTimer: 0,
+      gif: false,
+      logo: false,
+      dstate: false, // состояние дисплея
     }
   },
   created() {
@@ -74,6 +83,7 @@ export default {
         case 'ArrowUp': this.cUp(); break
         case 'ArrowDown': this.cDown(); break
         case ' ': this.cOk(); break
+        case 'd': this.dstate = !this.dstate; break
         case 'p': this.mode = 'programming'; break
         case 'Escape': this.mode = 'main'; break
       }
@@ -89,12 +99,29 @@ export default {
         case 'D': this.cLeft(); break
         case 'E': this.cDown(); break
         case 'P': this.mode = 'programming'; this.shift = 0; break
-        case 'M': this.mode = 'main'; break
+        case 'M': if(this.mode == 'main') this.holdOk(); break
         case 'Q': this.shift = 0; break
         case 'R': this.shift = 1; break
         case 'S': this.shift = 2; break
         case 'T': this.shift = 3; break
         case 'U': this.shift = 4; break      
+        case 'I': 
+          this.info = true
+        break
+        case 'O': 
+          this.loading = true
+          this.logo = false
+          this.gif = false
+        break      
+        case 'W': 
+          this.info = false
+        break      
+        case 'Start': 
+          this.dstate = true
+        break
+        case 'Off': 
+          this.dstate = false
+        break      
       }
       //eslint-disable-next-line
       console.log(command)
@@ -124,26 +151,14 @@ export default {
     
   },
   mounted() {
-        this.gif = true
-
-        setTimeout(() => {
-          this.gif = false
-          this.loading = false
-        }, 2000)
+        
 
   // датчики
     this.socket.on('sconnect', res => {
       if(res == 'success') {
-        this.gif = true
-
-        setTimeout(() => {
-          this.gif = false
-          this.loading = false
-        }, 2000)
-
         setInterval(() => {
           //eslint-disable-next-line
-          console.log('reading')
+          // console.log('reading')
           this.socket.emit('read', 'read')
         }, 500)
       }
@@ -232,14 +247,17 @@ export default {
           this.boost = this.sboost
           this.mode = 'back'
         break
+        case 'programming':
+          if(this.shift < 4) {
+          this.shift ++
+        } else {
+          this.mode = 'main'
+        }
+        break
       }
 
       // if(this.mode == 'programming') {
-      //   if(this.shift < 4) {
-      //     this.shift ++
-      //   } else {
-      //     this.mode = 'main'
-      //   }
+        
       // } else {
       //   if(this.mode === 'front') {
       //     this.mode = 'turn-sel'
@@ -256,7 +274,7 @@ export default {
 
     gifStarted() {
       //eslint-disable-next-line
-      console.log('gif')
+      // console.log('gif')
     },    
     test() {
       this.socket.emit('test', 'sdildfsjkdfgjkldfgjklfdsjk')
@@ -290,6 +308,21 @@ export default {
     sboost() {
       if(this.mode !== 'programming') this.holdTime()
     },
+    dstate(val) {
+      if(val) {
+        this.logo = true
+        setTimeout(() => {
+          this.logo = false
+          this.gif = true
+          setTimeout(() => {
+            this.gif = false
+            this.loading = false
+          }, 2000)
+        }, 1000)
+      } else {
+        this.loading = true
+      } 
+    }
   }
   
 }
